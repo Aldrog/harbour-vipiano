@@ -37,14 +37,16 @@ Page {
 
         ComboBox {
             label: qsTr("Program")
+            value: synthesizer.currentProgram.name
+
             menu: ContextMenu {
-                MenuItem {
-                    text: qsTr("Yamaha Grand Piano")
-                    onClicked: synthesizer.selectProgram(0, 0)
-                }
-                MenuItem {
-                    text: qsTr("Church Organ")
-                    onClicked: synthesizer.selectProgram(0, 19)
+                Repeater {
+                    model: synthesizer.availablePrograms
+
+                    MenuItem {
+                        text: modelData.name
+                        onClicked: synthesizer.currentProgram = modelData
+                    }
                 }
             }
         }

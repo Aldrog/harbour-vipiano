@@ -17,12 +17,8 @@
  * along with ViPiano.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef QT_QML_DEBUG
-#include <QtQuick>
-#endif
-
 #include <sailfishapp.h>
-#include <QQuickView>
+#include <QtQuick>
 #include "synthesizer.h"
 
 
@@ -30,6 +26,7 @@ int main(int argc, char *argv[])
 {
     QGuiApplication *app(SailfishApp::application(argc, argv));
     QQuickView *view(SailfishApp::createView());
+    qmlRegisterType<SynthPreset>();
     Synthesizer *synth = new Synthesizer();
     view->rootContext()->setContextProperty("synthesizer", synth);
     view->setSource(SailfishApp::pathTo("qml/harbour-vipiano.qml"));

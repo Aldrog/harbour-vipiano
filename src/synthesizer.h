@@ -21,31 +21,62 @@
 #define SYNTHESIZER_H
 
 #include <QObject>
+#include <QQmlListProperty>
 #include <fluidsynth.h>
 #include <audioresource.h>
+
+class SynthPreset : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QString name READ name CONSTANT)
+    Q_PROPERTY(int bank READ bank CONSTANT)
+    Q_PROPERTY(int program READ program CONSTANT)
+public:
+    explicit SynthPreset(fluid_preset_t *preset, QObject *parent = nullptr);
+    ~SynthPreset();
+
+    QString name();
+    int bank();
+    int program();
+    unsigned int sfontId();
+
+private:
+    fluid_preset_t *m_preset;
+};
 
 class Synthesizer : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<SynthPreset> availablePrograms READ availablePrograms NOTIFY availableProgramsChanged)
+    Q_PROPERTY(SynthPreset *currentProgram READ currentProgram WRITE setCurrentProgram NOTIFY currentProgramChanged)
 public:
-    explicit Synthesizer(QObject *parent = 0);
+    explicit Synthesizer(QObject *parent = nullptr);
     ~Synthesizer();
 
+    QQmlListProperty<SynthPreset> availablePrograms();
+    inline SynthPreset *currentProgram() { return m_currentPreset; }
+    void setCurrentProgram(SynthPreset *program);
+
 signals:
+    void availableProgramsChanged();
+    void currentProgramChanged();
 
 public slots:
     void startPlaying(int key);
     void stopPlaying(int key);
-    void selectProgram(unsigned int bank, unsigned int program);
+    void selectProgram(SynthPreset *preset);
 
 private slots:
     static void onAudioAcquired(audioresource_t *audio_resource, bool acquired, void *user_data);
 
 private:
-    fluid_settings_t* m_settings;
-    fluid_audio_driver_t* m_adriver;
-    fluid_synth_t* m_synth;
-    int m_fontId;
+    fluid_settings_t *m_settings;
+    fluid_audio_driver_t *m_adriver;
+    fluid_synth_t *m_synth;
+
+    QList<SynthPreset *> m_presets;
+    SynthPreset *m_currentPreset;
+
     audioresource_t *resource;
 };
 
