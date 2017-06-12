@@ -26,6 +26,7 @@ PkgConfigBR:
   - Qt5Qml
   - Qt5Quick
   - glib-2.0
+  - gthread-2.0
   - libpulse-simple
   - sndfile
   - audioresource
@@ -33,7 +34,6 @@ PkgConfigBR:
 # Build dependencies without a pkgconfig setup can be listed here
 PkgBR:
   - cmake
-  - readline-devel
 
 # Runtime dependencies which are not automatically detected
 Requires:

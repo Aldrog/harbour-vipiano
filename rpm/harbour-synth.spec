@@ -6,6 +6,8 @@
 Name:       harbour-synth
 
 # >> macros
+%define __provides_exclude_from ^%{_datadir}/.*$
+%define __requires_exclude ^libfluidsynth.*$
 # << macros
 
 %{!?qtc_qmake:%define qtc_qmake %qmake}
@@ -26,11 +28,11 @@ BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(glib-2.0)
+BuildRequires:  pkgconfig(gthread-2.0)
 BuildRequires:  pkgconfig(libpulse-simple)
 BuildRequires:  pkgconfig(sndfile)
 BuildRequires:  pkgconfig(audioresource)
 BuildRequires:  cmake
-BuildRequires:  readline-devel
 BuildRequires:  desktop-file-utils
 
 %description
@@ -48,8 +50,13 @@ Short description of my Sailfish OS Application
 #rm -rf fluidsynth
 mkdir -p fluidsynth
 cd fluidsynth
-echo "%{_datadir}"
-cmake ../../%{name}/fluidsynth -DCMAKE_INSTALL_PREFIX:PATH=%{_datadir}/%{name}
+cmake ../../%{name}/fluidsynth \
+    -DCMAKE_INSTALL_PREFIX:PATH=%{_datadir}/%{name} \
+    -DCMAKE_BUILD_TYPE:STRING=Release \
+    -Denable-readline:BOOL=OFF \
+    -Denable-dbus:BOOL=OFF \
+    -DBUILD_TOOL:BOOL=OFF \
+    -DBUILD_DOCS:BOOL=OFF
 %qtc_make %{?_smp_mflags}
 cd ..
 mkdir -p $PWD/tempdest
@@ -66,6 +73,17 @@ DESTDIR=$PWD/tempdest make -C fluidsynth install
 %install
 rm -rf %{buildroot}
 # >> install pre
+cd fluidsynth
+cmake ../../%{name}/fluidsynth \
+    -DCMAKE_INSTALL_PREFIX:PATH=%{_datadir}/%{name} \
+    -DCMAKE_BUILD_TYPE:STRING=Release \
+    -Denable-readline:BOOL=OFF \
+    -Denable-dbus:BOOL=OFF \
+    -DBUILD_TOOL:BOOL=OFF \
+    -DBUILD_DOCS:BOOL=OFF \
+    -DINSTALL_DEVEL:BOOL=OFF
+%qtc_make %{?_smp_mflags}
+cd ..
 DESTDIR=%{buildroot} make -C fluidsynth install
 mkdir -p %{buildroot}%{_datadir}/%{name}/soundfonts/
 install -p ../%{name}/soundfonts/FluidR3_GM.sf2 %{buildroot}%{_datadir}/%{name}/soundfonts/

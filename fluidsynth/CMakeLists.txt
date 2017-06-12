@@ -66,6 +66,9 @@ option ( enable-midishare "compile MidiShare support (if it is available)" on )
 option ( enable-readline "compile readline lib line editing (if it is available)" on )
 option ( enable-dbus "compile DBUS support (if it is available)" on )
 option ( BUILD_SHARED_LIBS "Build a shared object or DLL" on )
+option ( BUILD_TOOL "Build a CLI tool" on )
+option ( BUILD_DOCS "Build and install documentation" on )
+option ( INSTALL_DEVEL "Install development headers" on )
 
 # Platform specific options
 if ( ${CMAKE_SYSTEM} MATCHES "Linux" )
@@ -401,18 +404,24 @@ endif ( MSVC )
 
 # Process subdirectories
 add_subdirectory ( src )
-add_subdirectory ( include )
-add_subdirectory ( doc )
+if ( INSTALL_DEVEL )
+    add_subdirectory ( include )
+endif ( INSTALL_DEVEL )
+if ( BUILD_DOCS )
+    add_subdirectory ( doc )
+endif ( BUILD_DOCS )
 
 # pkg-config support
-set ( prefix "${CMAKE_INSTALL_PREFIX}" )
-set ( exec_prefix "\${prefix}" )
-set ( libdir "\${exec_prefix}/${LIB_INSTALL_DIR}${LIB_SUFFIX}" )
-set ( includedir "\${prefix}/${INCLUDE_INSTALL_DIR}" )
-configure_file ( fluidsynth.pc.in
-	${CMAKE_BINARY_DIR}/fluidsynth.pc IMMEDIATE @ONLY )
-install ( FILES ${CMAKE_BINARY_DIR}/fluidsynth.pc
-	DESTINATION ${LIB_INSTALL_DIR}${LIB_SUFFIX}/pkgconfig )
+if ( INSTALL_DEVEL )
+    set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+    set ( exec_prefix "\${prefix}" )
+    set ( libdir "\${exec_prefix}/${LIB_INSTALL_DIR}${LIB_SUFFIX}" )
+    set ( includedir "\${prefix}/${INCLUDE_INSTALL_DIR}" )
+    configure_file ( fluidsynth.pc.in
+        ${CMAKE_BINARY_DIR}/fluidsynth.pc IMMEDIATE @ONLY )
+    install ( FILES ${CMAKE_BINARY_DIR}/fluidsynth.pc
+        DESTINATION ${LIB_INSTALL_DIR}${LIB_SUFFIX}/pkgconfig )
+endif ( INSTALL_DEVEL )
 
 # Extra targets for Unix build environments
 if ( UNIX )

@@ -298,34 +298,43 @@ target_link_libraries ( libfluidsynth
     ${LIBFLUID_LIBS}
 )
 
-# ************ CLI program ************
-
-set ( fluidsynth_SOURCES fluidsynth.c )
-
-add_executable ( fluidsynth
-    ${fluidsynth_SOURCES}
-)
-
-if ( FLUID_CPPFLAGS )
-  set_target_properties ( fluidsynth
-    PROPERTIES COMPILE_FLAGS ${FLUID_CPPFLAGS} )
-endif ( FLUID_CPPFLAGS )
-
-target_link_libraries ( fluidsynth
-    libfluidsynth
-    ${FLUID_LIBS}
-)
-
 if ( MACOSX_FRAMEWORK )
-  install ( TARGETS fluidsynth libfluidsynth
-    RUNTIME DESTINATION ${BIN_INSTALL_DIR}
+  install ( TARGETS libfluidsynth
     FRAMEWORK DESTINATION ${FRAMEWORK_INSTALL_DIR}
 )
 else ( MACOSX_FRAMEWORK )
-  install ( TARGETS fluidsynth libfluidsynth
-    RUNTIME DESTINATION ${BIN_INSTALL_DIR}
+  install ( TARGETS  libfluidsynth
     LIBRARY DESTINATION ${LIB_INSTALL_DIR}${LIB_SUFFIX}
     ARCHIVE DESTINATION ${LIB_INSTALL_DIR}${LIB_SUFFIX}
 )
 endif ( MACOSX_FRAMEWORK )
+
+# ************ CLI program ************
+
+if ( BUILD_TOOL )
+    set ( fluidsynth_SOURCES fluidsynth.c )
+
+    add_executable ( fluidsynth
+        ${fluidsynth_SOURCES}
+    )
+
+    if ( FLUID_CPPFLAGS )
+      set_target_properties ( fluidsynth
+        PROPERTIES COMPILE_FLAGS ${FLUID_CPPFLAGS} )
+    endif ( FLUID_CPPFLAGS )
+
+    target_link_libraries ( fluidsynth
+        libfluidsynth
+        ${FLUID_LIBS}
+    )
+
+    if ( MACOSX_FRAMEWORK )
+      install ( TARGETS fluidsynth
+    )
+    else ( MACOSX_FRAMEWORK )
+      install ( TARGETS fluidsynth
+        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
+    )
+    endif ( MACOSX_FRAMEWORK )
+endif ( BUILD_TOOL )
 
