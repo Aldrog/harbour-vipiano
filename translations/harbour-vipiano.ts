@@ -14,5 +14,17 @@
         <source>Welcome to ViPiano (Virtual Piano)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yamaha Grand Piano</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Church Organ</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

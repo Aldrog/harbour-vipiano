@@ -59,6 +59,11 @@ void Synthesizer::stopPlaying(int key)
     fluid_synth_noteoff(m_synth, 0, key);
 }
 
+void Synthesizer::selectProgram(unsigned int bank, unsigned int program)
+{
+    fluid_synth_program_select(m_synth, 0, m_fontId, bank, program);
+}
+
 void Synthesizer::onAudioAcquired(audioresource_t *audio_resource, bool acquired, void *user_data)
 {
     qDebug() << acquired;

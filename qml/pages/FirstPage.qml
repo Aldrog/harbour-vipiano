@@ -27,31 +27,43 @@ Page {
 
     allowedOrientations: Orientation.All
 
-    PageHeader {
-        id: header
-        title: qsTr("Welcome to ViPiano (Virtual Piano)")
-    }
+    Column {
+        anchors.fill: parent
 
-    Grid {
-        id: keyboard
-
-        leftPadding: Theme.horizontalPageMargin
-        rightPadding: Theme.horizontalPageMargin
-        spacing: Theme.paddingSmall
-
-        columns: ~~((parent.width - leftPadding - rightPadding + spacing) / (500 + spacing))
-
-        anchors {
-            top: header.bottom
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
+        PageHeader {
+            id: header
+            title: qsTr("Welcome to ViPiano (Virtual Piano)")
         }
 
-        Repeater {
-            model: 10
-            Octave {
-                number: index
+        ComboBox {
+            label: qsTr("Program")
+            menu: ContextMenu {
+                MenuItem {
+                    text: qsTr("Yamaha Grand Piano")
+                    onClicked: synthesizer.selectProgram(0, 0)
+                }
+                MenuItem {
+                    text: qsTr("Church Organ")
+                    onClicked: synthesizer.selectProgram(0, 19)
+                }
+            }
+        }
+
+        Grid {
+            id: keyboard
+
+            width: parent.width
+            leftPadding: Theme.horizontalPageMargin
+            rightPadding: Theme.horizontalPageMargin
+            spacing: Theme.paddingSmall
+
+            columns: ~~((parent.width - leftPadding - rightPadding + spacing) / (500 + spacing))
+
+            Repeater {
+                model: 10
+                Octave {
+                    number: index
+                }
             }
         }
     }
