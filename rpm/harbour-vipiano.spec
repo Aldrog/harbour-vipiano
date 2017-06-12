@@ -7,7 +7,8 @@ Name:       harbour-vipiano
 
 # >> macros
 %define __provides_exclude_from ^%{_datadir}/.*$
-%define __requires_exclude ^libfluidsynth.*$
+# libsndfile shouldn't be excluded but for some reason it causes Harbour validator to fail
+%define __requires_exclude ^libfluidsynth|libsndfile.*$
 # << macros
 
 %{!?qtc_qmake:%define qtc_qmake %qmake}
@@ -86,7 +87,7 @@ cmake ../../%{name}/fluidsynth \
 cd ..
 DESTDIR=%{buildroot} make -C fluidsynth install
 mkdir -p %{buildroot}%{_datadir}/%{name}/soundfonts/
-install -p ../%{name}/soundfonts/FluidR3_GM.sf2 %{buildroot}%{_datadir}/%{name}/soundfonts/
+install -m 644 -p ../%{name}/soundfonts/FluidR3_GM.sf2 %{buildroot}%{_datadir}/%{name}/soundfonts/
 # << install pre
 %qmake5_install
 
