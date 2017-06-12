@@ -18,52 +18,40 @@
  */
 
 
-import QtQuick 2.0
+import QtQuick 2.6
 import Sailfish.Silica 1.0
 
 
 Page {
     id: page
 
-    // The effective value will be restricted by ApplicationWindow.allowedOrientations
     allowedOrientations: Orientation.All
 
-    // To enable PullDownMenu, place our content in a SilicaFlickable
-    SilicaFlickable {
-        anchors.fill: parent
+    PageHeader {
+        id: header
+        title: qsTr("Welcome to ViPiano (Virtual Piano)")
+    }
 
-        // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
-        PullDownMenu {
-            MenuItem {
-                text: qsTr("Show Page 2")
-                onClicked: pageStack.push(Qt.resolvedUrl("SecondPage.qml"))
-            }
+    Grid {
+        id: keyboard
+
+        leftPadding: Theme.horizontalPageMargin
+        rightPadding: Theme.horizontalPageMargin
+        spacing: Theme.paddingSmall
+
+        columns: ~~((parent.width - leftPadding - rightPadding + spacing) / (500 + spacing))
+
+        anchors {
+            top: header.bottom
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
         }
 
-        // Tell SilicaFlickable the height of its content.
-        contentHeight: column.height
-
-        // Place our content in a Column.  The PageHeader is always placed at the top
-        // of the page, followed by our content.
-        Column {
-            id: column
-
-            width: page.width
-            spacing: Theme.paddingLarge
-            PageHeader {
-                title: qsTr("UI Template")
-            }
-            Label {
-                x: Theme.horizontalPageMargin
-                text: qsTr("Hello Sailors")
-                color: Theme.secondaryHighlightColor
-                font.pixelSize: Theme.fontSizeExtraLarge
-            }
-
-            Button {
-                text: qsTr("Test!")
-                onPressed: synthesizer.startPlaying()
-                onReleased: synthesizer.stopPlaying()
+        Repeater {
+            model: 10
+            Octave {
+                number: index
             }
         }
     }

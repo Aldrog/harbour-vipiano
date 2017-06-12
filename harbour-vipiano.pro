@@ -21,7 +21,6 @@ SOURCES += \
 OTHER_FILES += \
     qml/cover/CoverPage.qml \
     qml/pages/FirstPage.qml \
-    qml/pages/SecondPage.qml \
     translations/*.ts
 
 INCLUDEPATH += /usr/include/audioresource
@@ -49,4 +48,5 @@ DISTFILES += \
     rpm/harbour-vipiano.spec \
     rpm/harbour-vipiano.yaml \
     harbour-vipiano.desktop \
-    qml/harbour-vipiano.qml
+    qml/harbour-vipiano.qml \
+    qml/pages/Octave.qml

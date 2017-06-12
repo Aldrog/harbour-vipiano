@@ -49,16 +49,14 @@ Synthesizer::~Synthesizer()
     delete_fluid_settings(m_settings);
 }
 
-void Synthesizer::startPlaying()
+void Synthesizer::startPlaying(int key)
 {
-    qDebug() << "Note on";
-    fluid_synth_noteon(m_synth, 0, 60, 100);
+    fluid_synth_noteon(m_synth, 0, key, 100);
 }
 
-void Synthesizer::stopPlaying()
+void Synthesizer::stopPlaying(int key)
 {
-    qDebug() << "Note off";
-    fluid_synth_noteoff(m_synth, 0, 60);
+    fluid_synth_noteoff(m_synth, 0, key);
 }
 
 void Synthesizer::onAudioAcquired(audioresource_t *audio_resource, bool acquired, void *user_data)

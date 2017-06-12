@@ -34,8 +34,8 @@ public:
 signals:
 
 public slots:
-    void startPlaying();
-    void stopPlaying();
+    void startPlaying(int key);
+    void stopPlaying(int key);
 
 private slots:
     static void onAudioAcquired(audioresource_t *audio_resource, bool acquired, void *user_data);
