@@ -53,7 +53,7 @@ Synthesizer::Synthesizer(QObject *parent) : QObject(parent)
         m_adriver = new_fluid_audio_driver(m_settings, m_synth);
 
         void *user_data = nullptr;
-        resource = audioresource_init(AUDIO_RESOURCE_GAME, Synthesizer::onAudioAcquired, user_data);
+        resource = audioresource_init(AUDIO_RESOURCE_MEDIA, Synthesizer::onAudioAcquired, user_data);
         audioresource_acquire(resource);
     }
 }
