@@ -1,4 +1,4 @@
-Name: harbour-synth
+Name: harbour-vipiano
 Summary: A piano synthesizer
 Version: 0.1
 Release: 1
@@ -6,7 +6,7 @@ Release: 1
 # http://gitorious.org/meego-developer-tools/spectacle/blobs/master/data/GROUPS
 Group: Qt/Qt
 URL: http://example.org/
-License: LICENSE
+License: GPLv3+ and LGPLv2+ and MIT
 # This must be generated before uploading a package to a remote build service.
 # Usually this line does not need to be modified.
 Sources:

@@ -17,35 +17,22 @@
  * along with ViPiano.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SYNTHESIZER_H
-#define SYNTHESIZER_H
+#ifdef QT_QML_DEBUG
+#include <QtQuick>
+#endif
 
-#include <QObject>
-#include <fluidsynth.h>
-#include <audioresource.h>
+#include <sailfishapp.h>
+#include <QQuickView>
+#include "synthesizer.h"
 
-class Synthesizer : public QObject
+
+int main(int argc, char *argv[])
 {
-    Q_OBJECT
-public:
-    explicit Synthesizer(QObject *parent = 0);
-    ~Synthesizer();
-
-signals:
-
-public slots:
-    void startPlaying();
-    void stopPlaying();
-
-private slots:
-    static void onAudioAcquired(audioresource_t *audio_resource, bool acquired, void *user_data);
-
-private:
-    fluid_settings_t* m_settings;
-    fluid_audio_driver_t* m_adriver;
-    fluid_synth_t* m_synth;
-    int m_fontId;
-    audioresource_t *resource;
-};
-
-#endif // SYNTHESIZER_H
+    QGuiApplication *app(SailfishApp::application(argc, argv));
+    QQuickView *view(SailfishApp::createView());
+    Synthesizer *synth = new Synthesizer();
+    view->rootContext()->setContextProperty("synthesizer", synth);
+    view->setSource(SailfishApp::pathTo("qml/harbour-vipiano.qml"));
+    view->show();
+    return app->exec();
+}

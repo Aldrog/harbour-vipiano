@@ -10,27 +10,24 @@
 #   - translation filenames have to be changed
 
 # The name of your application
-TARGET = harbour-synth
+TARGET = harbour-vipiano
 
 CONFIG += sailfishapp
 
-SOURCES += src/harbour-synth.cpp \
-    src/synthesizer.cpp
+SOURCES += \
+    src/synthesizer.cpp \
+    src/harbour-vipiano.cpp
 
-OTHER_FILES += qml/harbour-synth.qml \
+OTHER_FILES += \
     qml/cover/CoverPage.qml \
     qml/pages/FirstPage.qml \
     qml/pages/SecondPage.qml \
-    rpm/harbour-synth.changes.in \
-    rpm/harbour-synth.spec \
-    rpm/harbour-synth.yaml \
-    translations/*.ts \
-    harbour-synth.desktop
+    translations/*.ts
 
 INCLUDEPATH += /usr/include/audioresource
-INCLUDEPATH += tempdest/usr/share/harbour-synth/include
-LIBS += -Ltempdest/usr/share/harbour-synth/lib -lfluidsynth -laudioresource
-QMAKE_RPATHDIR += /usr/share/harbour-synth/lib
+INCLUDEPATH += tempdest/usr/share/harbour-vipiano/include
+LIBS += -Ltempdest/usr/share/harbour-vipiano/lib -lfluidsynth -laudioresource
+QMAKE_RPATHDIR += /usr/share/harbour-vipiano/lib
 
 SAILFISHAPP_ICONS = 86x86 108x108 128x128 256x256
 
@@ -42,7 +39,14 @@ CONFIG += sailfishapp_i18n
 # planning to localize your app, remember to comment out the
 # following TRANSLATIONS line. And also do not forget to
 # modify the localized app name in the the .desktop file.
-TRANSLATIONS += translations/harbour-synth-de.ts
+TRANSLATIONS += translations/harbour-vipiano-de.ts
 
 HEADERS += \
     src/synthesizer.h
+
+DISTFILES += \
+    rpm/harbour-vipiano.changes.in \
+    rpm/harbour-vipiano.spec \
+    rpm/harbour-vipiano.yaml \
+    harbour-vipiano.desktop \
+    qml/harbour-vipiano.qml
