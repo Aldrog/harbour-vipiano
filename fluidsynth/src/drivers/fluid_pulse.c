@@ -63,7 +63,7 @@ void fluid_pulse_audio_driver_settings(fluid_settings_t* settings)
 {
   fluid_settings_register_str(settings, "audio.pulseaudio.server", "default", 0, NULL, NULL);
   fluid_settings_register_str(settings, "audio.pulseaudio.device", "default", 0, NULL, NULL);
-  fluid_settings_register_str(settings, "audio.pulseaudio.media-role", "music", 0, NULL, NULL);
+  fluid_settings_register_str(settings, "audio.pulseaudio.media-role", "x-maemo", 0, NULL, NULL);
   fluid_settings_register_int(settings, "audio.pulseaudio.adjust-latency", 1, 0, 1,
                               FLUID_HINT_TOGGLED, NULL, NULL);
 }
