@@ -21,12 +21,15 @@ SOURCES += \
 OTHER_FILES += \
     qml/cover/CoverPage.qml \
     qml/pages/FirstPage.qml \
+    qml/harbour-vipiano.qml \
+    qml/pages/Octave.qml \
     translations/*.ts
 
-INCLUDEPATH += /usr/include/audioresource
 INCLUDEPATH += tempdest/usr/share/harbour-vipiano/include
-LIBS += -Ltempdest/usr/share/harbour-vipiano/lib -lfluidsynth -laudioresource
+LIBS += -Ltempdest/usr/share/harbour-vipiano/lib -lfluidsynth
 QMAKE_RPATHDIR += /usr/share/harbour-vipiano/lib
+
+PKGCONFIG += sndfile audioresource
 
 SAILFISHAPP_ICONS = 86x86 108x108 128x128 256x256
 
@@ -47,6 +50,4 @@ DISTFILES += \
     rpm/harbour-vipiano.changes.in \
     rpm/harbour-vipiano.spec \
     rpm/harbour-vipiano.yaml \
-    harbour-vipiano.desktop \
-    qml/harbour-vipiano.qml \
-    qml/pages/Octave.qml
+    harbour-vipiano.desktop

@@ -30,6 +30,8 @@ PkgConfigBR:
   - libpulse-simple
   - sndfile
   - audioresource
+  - ogg
+  - vorbis
 
 # Build dependencies without a pkgconfig setup can be listed here
 PkgBR:

@@ -20,36 +20,30 @@
 #include "synthesizer.h"
 #include <QDebug>
 #include <sailfishapp.h>
-#include <string.h>
 
 Synthesizer::Synthesizer(QObject *parent) : QObject(parent)
 {
     m_settings = new_fluid_settings();
     m_synth = new_fluid_synth(m_settings);
-    unsigned int sfontId = fluid_synth_sfload(m_synth, SailfishApp::pathTo("soundfonts/FluidR3_GM.sf2").path().toStdString().c_str(), true);
+    int sfontId = fluid_synth_sfload(m_synth, SailfishApp::pathTo("soundfonts/FluidR3Mono_GM.sf3").path().toStdString().c_str(), true);
     if(sfontId == FLUID_FAILED)
         qDebug() << "Failed font loading";
     else {
         fluid_sfont_t *sfont = fluid_synth_get_sfont_by_id(m_synth, sfontId);
-        fluid_preset_t* preset = new fluid_preset_t();
-        preset->sfont = sfont;
+        fluid_preset_t *preset = nullptr;
 
         // Reset the iteration
-        sfont->iteration_start(sfont);
+        fluid_sfont_iteration_start(sfont);
 
         // Go through all the presets within the soundfont
-        int more = 1;
-        while (more) {
-            more = sfont->iteration_next(sfont, preset); // Will return 0 if no more soundfonts left
-            if (more) {
-                m_presets.append(new SynthPreset(preset, this));
-            }
+        while ( (preset = fluid_sfont_iteration_next(sfont)) ) {
+            m_presets.append(new SynthPreset(preset, sfontId, this));
         }
-        delete preset;
 
         setCurrentProgram(m_presets[0]);
 
         fluid_settings_setstr(m_settings, "audio.driver", "pulseaudio");
+        fluid_settings_setstr(m_settings, "audio.pulseaudio.media-role", "x-maemo");
         m_adriver = new_fluid_audio_driver(m_settings, m_synth);
 
         void *user_data = nullptr;
@@ -98,35 +92,20 @@ void Synthesizer::selectProgram(SynthPreset *preset)
 
 void Synthesizer::onAudioAcquired(audioresource_t *audio_resource, bool acquired, void *user_data)
 {
-    qDebug() << acquired;
+    Q_UNUSED(audio_resource)
+    Q_UNUSED(user_data)
+    qDebug() << "audio acquired:" << acquired;
 }
 
-SynthPreset::SynthPreset(fluid_preset_t *preset, QObject *parent) :
-    QObject(parent),
-    m_preset(new fluid_preset_t(*preset))
-{ }
+SynthPreset::SynthPreset(fluid_preset_t *preset, int sfontId, QObject *parent)
+    : QObject(parent)
+    , m_name(QString::fromLatin1(fluid_preset_get_name(preset)))
+    , m_bankNum(fluid_preset_get_banknum(preset))
+    , m_num(fluid_preset_get_num(preset))
+    , m_sfontId(sfontId)
+{
+}
 
 SynthPreset::~SynthPreset()
 {
-    delete m_preset;
-}
-
-QString SynthPreset::name()
-{
-    return QString::fromLatin1(m_preset->get_name(m_preset));
-}
-
-int SynthPreset::bank()
-{
-    return m_preset->get_banknum(m_preset);
-}
-
-int SynthPreset::program()
-{
-    return m_preset->get_num(m_preset);
-}
-
-unsigned int SynthPreset::sfontId()
-{
-    return m_preset->sfont->id;
 }

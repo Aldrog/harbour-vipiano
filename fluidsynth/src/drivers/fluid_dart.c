@@ -3,16 +3,16 @@
  * Copyright (C) 2003  Peter Hanappe and others.
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public License
- * as published by the Free Software Foundation; either version 2 of
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301, USA
@@ -30,9 +30,6 @@
 
 #if DART_SUPPORT
 
-/* To avoid name conflict */
-#undef VERSION
-
 #define INCL_DOS
 #include <os2.h>
 
@@ -46,9 +43,10 @@
  * This structure should not be accessed directly. Use audio port
  * functions instead.
  */
-typedef struct {
+typedef struct
+{
     fluid_audio_driver_t driver;
-    fluid_synth_t* synth;
+    fluid_synth_t *synth;
     int frame_size;
     USHORT usDeviceID;                          /* Amp Mixer device id     */
     MCI_MIX_BUFFER MixBuffers[NUM_MIX_BUFS];    /* Device buffers          */
@@ -57,15 +55,8 @@ typedef struct {
 } fluid_dart_audio_driver_t;
 
 static HMODULE m_hmodMDM = NULLHANDLE;
-static ULONG (APIENTRY *m_pfnmciSendCommand)(USHORT, USHORT, ULONG, PVOID, USHORT) = NULL;
-
-fluid_audio_driver_t* new_fluid_dart_audio_driver(fluid_settings_t* settings,
-                          fluid_synth_t* synth);
-
-int delete_fluid_dart_audio_driver(fluid_audio_driver_t* p);
-void fluid_dart_audio_driver_settings(fluid_settings_t* settings);
-
-static LONG APIENTRY fluid_dart_audio_run( ULONG ulStatus, PMCI_MIX_BUFFER pBuffer, ULONG ulFlags );
+static ULONG(APIENTRY *m_pfnmciSendCommand)(USHORT, USHORT, ULONG, PVOID, USHORT) = NULL;
+static LONG APIENTRY fluid_dart_audio_run(ULONG ulStatus, PMCI_MIX_BUFFER pBuffer, ULONG ulFlags);
 
 /**************************************************************
  *
@@ -73,16 +64,16 @@ static LONG APIENTRY fluid_dart_audio_run( ULONG ulStatus, PMCI_MIX_BUFFER pBuff
  *
  */
 
-void fluid_dart_audio_driver_settings(fluid_settings_t* settings)
+void fluid_dart_audio_driver_settings(fluid_settings_t *settings)
 {
-    fluid_settings_register_str(settings, "audio.dart.device", "default", 0, NULL, NULL);
+    fluid_settings_register_str(settings, "audio.dart.device", "default", 0);
 }
 
 
-fluid_audio_driver_t*
-new_fluid_dart_audio_driver(fluid_settings_t* settings, fluid_synth_t* synth)
+fluid_audio_driver_t *
+new_fluid_dart_audio_driver(fluid_settings_t *settings, fluid_synth_t *synth)
 {
-    fluid_dart_audio_driver_t* dev;
+    fluid_dart_audio_driver_t *dev;
     double sample_rate;
     int periods, period_size;
     UCHAR szFailedName[ 256 ];
@@ -91,10 +82,13 @@ new_fluid_dart_audio_driver(fluid_settings_t* settings, fluid_synth_t* synth)
     ULONG rc;
 
     dev = FLUID_NEW(fluid_dart_audio_driver_t);
-    if (dev == NULL) {
+
+    if(dev == NULL)
+    {
         FLUID_LOG(FLUID_ERR, "Out of memory");
         return NULL;
     }
+
     FLUID_MEMSET(dev, 0, sizeof(fluid_dart_audio_driver_t));
 
     fluid_settings_getnum(settings, "synth.sample-rate", &sample_rate);
@@ -102,7 +96,8 @@ new_fluid_dart_audio_driver(fluid_settings_t* settings, fluid_synth_t* synth)
     fluid_settings_getint(settings, "audio.period-size", &period_size);
 
     /* check the format */
-    if (!fluid_settings_str_equal(settings, "audio.sample-format", "16bits")) {
+    if(!fluid_settings_str_equal(settings, "audio.sample-format", "16bits"))
+    {
         FLUID_LOG(FLUID_ERR, "Unhandled sample format");
         goto error_recovery;
     }
@@ -112,18 +107,20 @@ new_fluid_dart_audio_driver(fluid_settings_t* settings, fluid_synth_t* synth)
 
     /* Load only once
      */
-    if( m_hmodMDM == NULLHANDLE )
+    if(m_hmodMDM == NULLHANDLE)
     {
         rc = DosLoadModule(szFailedName, sizeof(szFailedName), "MDM", &m_hmodMDM);
 
-        if (rc != 0 ) {
+        if(rc != 0)
+        {
             FLUID_LOG(FLUID_ERR, "Cannot load MDM.DLL for DART due to %s", szFailedName);
             goto error_recovery;
         }
 
         rc = DosQueryProcAddr(m_hmodMDM, 1, NULL, (PFN *)&m_pfnmciSendCommand);
 
-        if (rc != 0 ) {
+        if(rc != 0)
+        {
             FLUID_LOG(FLUID_ERR, "Cannot find mciSendCommand() in MDM.DLL");
             DosFreeModule(m_hmodMDM);
             m_hmodMDM = NULLHANDLE;
@@ -141,7 +138,8 @@ new_fluid_dart_audio_driver(fluid_settings_t* settings, fluid_synth_t* synth)
                              MCI_WAIT | MCI_OPEN_TYPE_ID | MCI_OPEN_SHAREABLE,
                              (PVOID)&AmpOpenParms, 0);
 
-    if (rc != MCIERR_SUCCESS) {
+    if(rc != MCIERR_SUCCESS)
+    {
         FLUID_LOG(FLUID_ERR, "Cannot open DART, rc = %lu", rc);
         goto error_recovery;
     }
@@ -166,7 +164,8 @@ new_fluid_dart_audio_driver(fluid_settings_t* settings, fluid_synth_t* synth)
                              MCI_WAIT | MCI_MIXSETUP_INIT,
                              (PVOID)&dev->MixSetupParms, 0);
 
-    if (rc != MCIERR_SUCCESS) {
+    if(rc != MCIERR_SUCCESS)
+    {
         FLUID_LOG(FLUID_ERR, "Cannot setup DART, rc = %lu", rc);
         goto error_recovery;
     }
@@ -182,20 +181,22 @@ new_fluid_dart_audio_driver(fluid_settings_t* settings, fluid_synth_t* synth)
                              MCI_WAIT | MCI_ALLOCATE_MEMORY,
                              (PVOID)&dev->BufferParms, 0);
 
-    if ((USHORT)rc != MCIERR_SUCCESS) {
+    if((USHORT)rc != MCIERR_SUCCESS)
+    {
         FLUID_LOG(FLUID_ERR, "Cannot allocate memory for DART, rc = %lu", rc);
         goto error_recovery;
     }
 
     /* Initialize all device buffers.
      */
-    for (i = 0; i < NUM_MIX_BUFS; i++) {
-       FLUID_MEMSET(dev->MixBuffers[i].pBuffer, 0, dev->BufferParms.ulBufferSize);
-       dev->MixBuffers[i].ulBufferLength = dev->BufferParms.ulBufferSize;
-       dev->MixBuffers[i].ulFlags = 0;
-       dev->MixBuffers[i].ulUserParm = (ULONG)dev;
-       fluid_synth_write_s16(dev->synth, dev->MixBuffers[i].ulBufferLength / dev->frame_size,
-                             dev->MixBuffers[i].pBuffer, 0, 2, dev->MixBuffers[i].pBuffer, 1, 2 );
+    for(i = 0; i < NUM_MIX_BUFS; i++)
+    {
+        FLUID_MEMSET(dev->MixBuffers[i].pBuffer, 0, dev->BufferParms.ulBufferSize);
+        dev->MixBuffers[i].ulBufferLength = dev->BufferParms.ulBufferSize;
+        dev->MixBuffers[i].ulFlags = 0;
+        dev->MixBuffers[i].ulUserParm = (ULONG)dev;
+        fluid_synth_write_s16(dev->synth, dev->MixBuffers[i].ulBufferLength / dev->frame_size,
+                              dev->MixBuffers[i].pBuffer, 0, 2, dev->MixBuffers[i].pBuffer, 1, 2);
     }
 
     /* Write buffers to kick off the amp mixer.
@@ -204,23 +205,21 @@ new_fluid_dart_audio_driver(fluid_settings_t* settings, fluid_synth_t* synth)
                                  dev->MixBuffers,
                                  NUM_MIX_BUFS);
 
-    return (fluid_audio_driver_t*) dev;
+    return (fluid_audio_driver_t *) dev;
 
 error_recovery:
 
-    delete_fluid_dart_audio_driver((fluid_audio_driver_t*) dev);
+    delete_fluid_dart_audio_driver((fluid_audio_driver_t *) dev);
     return NULL;
 }
 
-int delete_fluid_dart_audio_driver(fluid_audio_driver_t* p)
+void delete_fluid_dart_audio_driver(fluid_audio_driver_t *p)
 {
-    fluid_dart_audio_driver_t* dev = (fluid_dart_audio_driver_t*) p;
+    fluid_dart_audio_driver_t *dev = (fluid_dart_audio_driver_t *) p;
+    fluid_return_if_fail(dev != NULL);
 
-    if (dev == NULL) {
-        return FLUID_OK;
-    }
-
-    if (dev->usDeviceID != 0) {
+    if(dev->usDeviceID != 0)
+    {
         MCI_GENERIC_PARMS    GenericParms;
 
         /* Send message to stop the audio device
@@ -241,21 +240,21 @@ int delete_fluid_dart_audio_driver(fluid_audio_driver_t* p)
     }
 
     FLUID_FREE(dev);
-    return FLUID_OK;
 }
 
-static LONG APIENTRY fluid_dart_audio_run( ULONG ulStatus, PMCI_MIX_BUFFER pBuffer, ULONG ulFlags )
+static LONG APIENTRY fluid_dart_audio_run(ULONG ulStatus, PMCI_MIX_BUFFER pBuffer, ULONG ulFlags)
 {
-    fluid_dart_audio_driver_t* dev=(fluid_dart_audio_driver_t*)pBuffer->ulUserParm;
+    fluid_dart_audio_driver_t *dev = (fluid_dart_audio_driver_t *)pBuffer->ulUserParm;
 
-    switch( ulFlags ) {
-        case MIX_STREAM_ERROR | MIX_WRITE_COMPLETE: /* error occur in device */
-        case MIX_WRITE_COMPLETE:                    /* for playback  */
-            FLUID_MEMSET(pBuffer->pBuffer, 0, pBuffer->ulBufferLength);
-            fluid_synth_write_s16(dev->synth, pBuffer->ulBufferLength / dev->frame_size,
-                                  pBuffer->pBuffer, 0, 2, pBuffer->pBuffer, 1, 2 );
-            dev->MixSetupParms.pmixWrite(dev->MixSetupParms.ulMixHandle, pBuffer, 1);
-            break;
+    switch(ulFlags)
+    {
+    case MIX_STREAM_ERROR | MIX_WRITE_COMPLETE: /* error occur in device */
+    case MIX_WRITE_COMPLETE:                    /* for playback  */
+        FLUID_MEMSET(pBuffer->pBuffer, 0, pBuffer->ulBufferLength);
+        fluid_synth_write_s16(dev->synth, pBuffer->ulBufferLength / dev->frame_size,
+                              pBuffer->pBuffer, 0, 2, pBuffer->pBuffer, 1, 2);
+        dev->MixSetupParms.pmixWrite(dev->MixSetupParms.ulMixHandle, pBuffer, 1);
+        break;
     }
 
     return TRUE;

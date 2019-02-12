@@ -22,6 +22,9 @@
 /* Define if D-Bus support is enabled */
 #cmakedefine DBUS_SUPPORT  @DBUS_SUPPORT@
 
+/* Soundfont to load automatically in some use cases */
+#cmakedefine DEFAULT_SOUNDFONT "@DEFAULT_SOUNDFONT@"
+
 /* Define to enable FPE checks */
 #cmakedefine FPE_CHECK @FPE_CHECK@
 
@@ -40,14 +43,11 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #cmakedefine HAVE_INTTYPES_H @HAVE_INTTYPES_H@
 
-/* whether or not we are supporting ladcca */
-#cmakedefine HAVE_LADCCA @HAVE_LADCCA@
+/* Define to 1 if you have the <io.h> header file. */
+#cmakedefine HAVE_IO_H @HAVE_IO_H@
 
 /* whether or not we are supporting lash */
 #cmakedefine HAVE_LASH @HAVE_LASH@
-
-/* Define to 1 if you have the `dl' library (-ldl). */
-#cmakedefine HAVE_LIBDL @HAVE_LIBDL@
 
 /* Define to 1 if you have the `MidiShare' library (-lMidiShare). */
 #cmakedefine HAVE_LIBMIDISHARE @HAVE_LIBMIDISHARE@
@@ -75,6 +75,12 @@
 
 /* Define to 1 if you have the <netinet/tcp.h> header file. */
 #cmakedefine HAVE_NETINET_TCP_H @HAVE_NETINET_TCP_H@
+
+/* Define if compiling the mixer with multi-thread support */
+#cmakedefine ENABLE_MIXER_THREADS @ENABLE_MIXER_THREADS@
+
+/* Define if compiling with openMP to enable parallel audio rendering */
+#cmakedefine HAVE_OPENMP @HAVE_OPENMP@
 
 /* Define to 1 if you have the <pthread.h> header file. */
 #cmakedefine HAVE_PTHREAD_H @HAVE_PTHREAD_H@
@@ -130,11 +136,20 @@
 /* Define to 1 if you have the <getopt.h> header file. */
 #cmakedefine HAVE_GETOPT_H @HAVE_GETOPT_H@
 
+/* Define to 1 if you have the inet_ntop() function. */
+#cmakedefine HAVE_INETNTOP @HAVE_INETNTOP@
+
 /* Define to enable JACK driver */
 #cmakedefine JACK_SUPPORT @JACK_SUPPORT@
 
 /* Include the LADSPA Fx unit */
 #cmakedefine LADSPA @LADSPA_SUPPORT@
+
+/* Define to enable IPV6 support */
+#cmakedefine IPV6_SUPPORT @IPV6_SUPPORT@
+
+/* Define to enable network support */
+#cmakedefine NETWORK_SUPPORT @NETWORK_SUPPORT@
 
 /* libsndfile has ogg vorbis support */
 #cmakedefine LIBSNDFILE_HASVORBIS @LIBSNDFILE_HASVORBIS@
@@ -178,14 +193,23 @@
 /* Define to enable PulseAudio driver */
 #cmakedefine PULSE_SUPPORT @PULSE_SUPPORT@
 
+/* Define to enable DirectSound driver */
+#cmakedefine DSOUND_SUPPORT @DSOUND_SUPPORT@
+
+/* Define to enable Windows MIDI driver */
+#cmakedefine WINMIDI_SUPPORT @WINMIDI_SUPPORT@
+
 /* Define to 1 if you have the ANSI C header files. */
 #cmakedefine STDC_HEADERS @STDC_HEADERS@
 
+/* Soundfont to load for unit testing */
+#cmakedefine TEST_SOUNDFONT "@TEST_SOUNDFONT@"
+
+/* SF3 Soundfont to load for unit testing */
+#cmakedefine TEST_SOUNDFONT_SF3 "@TEST_SOUNDFONT_SF3@"
+
 /* Define to enable SIGFPE assertions */
 #cmakedefine TRAP_ON_FPE @TRAP_ON_FPE@
-
-/* Version number of package */
-#cmakedefine VERSION @FLUIDSYNTH_VERSION@
 
 /* Define to do all DSP in single floating point precision */
 #cmakedefine WITH_FLOAT @WITH_FLOAT@

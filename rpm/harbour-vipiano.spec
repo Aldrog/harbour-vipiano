@@ -33,6 +33,8 @@ BuildRequires:  pkgconfig(gthread-2.0)
 BuildRequires:  pkgconfig(libpulse-simple)
 BuildRequires:  pkgconfig(sndfile)
 BuildRequires:  pkgconfig(audioresource)
+BuildRequires:  pkgconfig(ogg)
+BuildRequires:  pkgconfig(vorbis)
 BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
 
@@ -57,8 +59,8 @@ cmake ../../%{name}/fluidsynth \
 -Denable-readline:BOOL=OFF \
 -Denable-dbus:BOOL=OFF \
 -DBUILD_TOOL:BOOL=OFF \
+-DBUILD_TESTS:BOOL=OFF \
 -DBUILD_DOCS:BOOL=OFF
-%qtc_make %{?_smp_mflags}
 cd ..
 mkdir -p $PWD/tempdest
 DESTDIR=$PWD/tempdest make -C fluidsynth install
@@ -81,13 +83,13 @@ cmake ../../%{name}/fluidsynth \
 -Denable-readline:BOOL=OFF \
 -Denable-dbus:BOOL=OFF \
 -DBUILD_TOOL:BOOL=OFF \
+-DBUILD_TESTS:BOOL=OFF \
 -DBUILD_DOCS:BOOL=OFF \
 -DINSTALL_DEVEL:BOOL=OFF
-%qtc_make %{?_smp_mflags}
 cd ..
 DESTDIR=%{buildroot} make -C fluidsynth install
 mkdir -p %{buildroot}%{_datadir}/%{name}/soundfonts/
-install -m 644 -p ../%{name}/soundfonts/FluidR3_GM.sf2 %{buildroot}%{_datadir}/%{name}/soundfonts/
+install -m 644 -p ../%{name}/soundfonts/FluidR3Mono_GM.sf3 %{buildroot}%{_datadir}/%{name}/soundfonts/
 # << install pre
 %qmake5_install
 

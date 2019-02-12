@@ -1,6 +1,11 @@
 [:Team:]
 Current development team
 
+Tom Moebert
+
+
+Former development team
+
 Josh Green
 Pedro Lopez-Cabanillas
 David Henningsson
@@ -22,7 +27,7 @@ summary of contributions.
 * Peter Hanappe. Initiated the project. files: stuck his nose in all
   files.
 
-* Josh Green is the current maintainer and contributed a lot of code
+* Josh Green is the former maintainer and contributed a lot of code
   directly or indirectly through the Swami and Smurf code base.
   The SoundFont loader is completely based on his code. He also wrote
   the alsa sequencer driver. He made many changes and bug fixes,
@@ -115,6 +120,11 @@ summary of contributions.
 * Matt Giuca improved the midi player by letting it load midi files from RAM,
   and by making it handle EOT events.
 
+* Tom Moebert (fluidsynth's maintainer since Jun 2017) cleaned up and refactored
+  fluidsynth's API and revised its documentation, added support for 24 bit sample
+  soundfonts, fixed various bugs, implemented unit tests and CI builds for
+  Windows, Linux, MacOSX.
+
 * Growing list of individuals who contributed bug fixes, corrections and minor features:
 Nicolas Boulicault for ALSA sequencer midi.portname setting.
 Werner Schweer
@@ -138,3 +148,6 @@ Nick Daly
 David Hilvert
 Bernat Arlandis i Mañó
 Sven Meier
+Marcus Weseloh
+Jean-jacques Ceresa
+

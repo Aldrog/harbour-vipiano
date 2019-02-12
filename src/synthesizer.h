@@ -32,16 +32,19 @@ class SynthPreset : public QObject
     Q_PROPERTY(int bank READ bank CONSTANT)
     Q_PROPERTY(int program READ program CONSTANT)
 public:
-    explicit SynthPreset(fluid_preset_t *preset, QObject *parent = nullptr);
+    SynthPreset(fluid_preset_t *preset, int sfontId, QObject *parent = nullptr);
     ~SynthPreset();
 
-    QString name();
-    int bank();
-    int program();
-    unsigned int sfontId();
+    QString name() const { return m_name; }
+    int bank() const { return m_bankNum; }
+    int program() const { return m_num; }
+    int sfontId() const { return m_sfontId; }
 
 private:
-    fluid_preset_t *m_preset;
+    const QString m_name;
+    const int m_bankNum;
+    const int m_num;
+    const int m_sfontId;
 };
 
 class Synthesizer : public QObject
