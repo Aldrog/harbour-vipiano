@@ -25,8 +25,8 @@ Rectangle {
     id: octave
 
     property int number: 0
-    property int whiteWidth: 50
-    property int blackWidth: 30
+    property int whiteWidth: 100
+    property int blackWidth: 50
     readonly property int totalWidth: 7 * whiteWidth + 5 * blackWidth
 
     function keyNumFromPoint(point) {
@@ -67,7 +67,7 @@ Rectangle {
         return 11
     }
 
-    height: 100
+    height: 200
     width: keys.width
     color: "transparent"
 
