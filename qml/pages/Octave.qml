@@ -72,16 +72,38 @@ Rectangle {
     color: "transparent"
 
     MultiPointTouchArea {
+        property var keysPressed: []
+
         anchors.fill: parent
-        onPressed: {
-            for (var i in touchPoints) {
-                synthesizer.startPlaying(number * 12 + keyNumFromPoint(touchPoints[i]))
+
+        function tryAdding(key) {
+            for (var i in keysPressed) {
+                if (key === keysPressed[i])
+                    return
             }
+            synthesizer.startPlaying(number * 12 + key)
         }
 
-        onReleased: {
+        function tryRemoving(key) {
+            for (var i in keysPressed) {
+                if (key === keysPressed[i])
+                    return
+            }
+            synthesizer.stopPlaying(number * 12 + key)
+        }
+
+        onTouchUpdated: {
+            var keys = []
             for (var i in touchPoints) {
-                synthesizer.stopPlaying(number * 12 + keyNumFromPoint(touchPoints[i]))
+                var key = keyNumFromPoint(touchPoints[i])
+                tryAdding(key)
+                keys.push(key)
+            }
+            var tmp = keysPressed
+            keysPressed = keys
+            keys = tmp
+            for (i in keys) {
+                tryRemoving(keys[i])
             }
         }
     }
