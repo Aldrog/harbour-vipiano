@@ -33,7 +33,6 @@ BuildRequires:  pkgconfig(gthread-2.0)
 BuildRequires:  pkgconfig(libpulse-simple)
 BuildRequires:  pkgconfig(sndfile)
 BuildRequires:  pkgconfig(audioresource)
-BuildRequires:  pkgconfig(ogg)
 BuildRequires:  pkgconfig(vorbis)
 BuildRequires:  cmake
 BuildRequires:  desktop-file-utils
@@ -50,7 +49,6 @@ Short description of my Sailfish OS Application
 
 %build
 # >> build pre
-#rm -rf fluidsynth
 mkdir -p fluidsynth
 cd fluidsynth
 cmake ../../%{name}/fluidsynth \
@@ -63,7 +61,7 @@ cmake ../../%{name}/fluidsynth \
 -DBUILD_DOCS:BOOL=OFF
 cd ..
 mkdir -p $PWD/tempdest
-DESTDIR=$PWD/tempdest make -C fluidsynth install
+DESTDIR=$PWD/tempdest /usr/bin/make -C fluidsynth install
 # << build pre
 
 %qtc_qmake5 
@@ -87,7 +85,7 @@ cmake ../../%{name}/fluidsynth \
 -DBUILD_DOCS:BOOL=OFF \
 -DINSTALL_DEVEL:BOOL=OFF
 cd ..
-DESTDIR=%{buildroot} make -C fluidsynth install
+DESTDIR=%{buildroot} /usr/bin/make -C fluidsynth install
 mkdir -p %{buildroot}%{_datadir}/%{name}/soundfonts/
 install -m 644 -p ../%{name}/soundfonts/FluidR3Mono_GM.sf3 %{buildroot}%{_datadir}/%{name}/soundfonts/
 # << install pre
