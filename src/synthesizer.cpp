@@ -77,7 +77,7 @@ void Synthesizer::setCurrentProgram(SynthPreset *program)
 
 void Synthesizer::startPlaying(int key)
 {
-    fluid_synth_noteon(m_synth, 0, key, 100);
+    fluid_synth_noteon(m_synth, 0, key, 127);
 }
 
 void Synthesizer::stopPlaying(int key)
