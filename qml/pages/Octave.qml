@@ -20,56 +20,31 @@
 import QtQuick 2.6
 import Sailfish.Silica 1.0
 
-
-Rectangle {
+Item {
     id: octave
 
     property int number: 0
-    property int whiteWidth: 100
-    property int blackWidth: 50
-    readonly property int totalWidth: 7 * whiteWidth + 5 * blackWidth
+    readonly property int whiteWidth: width / 7
+    property int blackWidth: 70
+    property int blackHeight: 170
 
     function keyNumFromPoint(point) {
-        var x = point.x
-        if(x < whiteWidth)
-            return 0
-        x -= whiteWidth
-        if(x < blackWidth)
-            return 1
-        x -= blackWidth
-        if(x < whiteWidth)
-            return 2
-        x -= whiteWidth
-        if(x < blackWidth)
-            return 3
-        x -= blackWidth
-        if(x < whiteWidth)
-            return 4
-        x -= whiteWidth
-        if(x < whiteWidth)
-            return 5
-        x -= whiteWidth
-        if(x < blackWidth)
-            return 6
-        x -= blackWidth
-        if(x < whiteWidth)
-            return 7
-        x -= whiteWidth
-        if(x < blackWidth)
-            return 8
-        x -= blackWidth
-        if(x < whiteWidth)
-            return 9
-        x -= whiteWidth
-        if(x < blackWidth)
-            return 10
-        x -= blackWidth
-        return 11
+        for (var i = 0; i < blackKeys.count; i++) {
+            var item = blackKeys.itemAt(i)
+            if (point.x >= item.x && point.x < item.x + item.width &&
+                point.y >= item.y && point.y < item.y + item.height)
+                return item.keyNum
+        }
+        for (i = 0; i < whiteKeys.count; i++) {
+            item = whiteKeys.itemAt(i)
+            if (point.x >= item.x && point.x < item.x + item.width &&
+                point.y >= item.y && point.y < item.y + item.height)
+                return item.keyNum
+        }
+        return -1
     }
 
-    height: 200
-    width: keys.width
-    color: "transparent"
+    height: 250
 
     MultiPointTouchArea {
         property var keysPressed: []
@@ -96,6 +71,8 @@ Rectangle {
             var keys = []
             for (var i in touchPoints) {
                 var key = keyNumFromPoint(touchPoints[i])
+                if (key < 0)
+                    continue
                 tryAdding(key)
                 keys.push(key)
             }
@@ -109,79 +86,39 @@ Rectangle {
     }
 
     Row {
-        id: keys
         height: parent.height
-        Rectangle {
-            color: "white"
-            border.color: "gray"
-            height: parent.height
-            width: whiteWidth
+        Repeater {
+            id: whiteKeys
+
+            model: 7
+            Rectangle {
+                property int keyNum: [0, 2, 4, 5, 7, 9, 11][index]
+
+                color: "white"
+                border.color: "gray"
+                border.width: 3
+                height: parent.height
+                width: whiteWidth
+            }
         }
+    }
+
+    Repeater {
+        id: blackKeys
+
+        model: [1, 2, 4, 5, 6]
         Rectangle {
+            property var whiteKey: whiteKeys.count > modelData ? whiteKeys.itemAt(modelData) : null
+            property int keyNum: [1, 3, 6, 8, 10][index]
+
             color: "black"
             border.color: "gray"
-            height: parent.height
+            border.width: 3
+            height: blackHeight
             width: blackWidth
-        }
-        Rectangle {
-            color: "white"
-            border.color: "gray"
-            height: parent.height
-            width: whiteWidth
-        }
-        Rectangle {
-            color: "black"
-            border.color: "gray"
-            height: parent.height
-            width: blackWidth
-        }
-        Rectangle {
-            color: "white"
-            border.color: "gray"
-            height: parent.height
-            width: whiteWidth
-        }
-        Rectangle {
-            color: "white"
-            border.color: "gray"
-            height: parent.height
-            width: whiteWidth
-        }
-        Rectangle {
-            color: "black"
-            border.color: "gray"
-            height: parent.height
-            width: blackWidth
-        }
-        Rectangle {
-            color: "white"
-            border.color: "gray"
-            height: parent.height
-            width: whiteWidth
-        }
-        Rectangle {
-            color: "black"
-            border.color: "gray"
-            height: parent.height
-            width: blackWidth
-        }
-        Rectangle {
-            color: "white"
-            border.color: "gray"
-            height: parent.height
-            width: whiteWidth
-        }
-        Rectangle {
-            color: "black"
-            border.color: "gray"
-            height: parent.height
-            width: blackWidth
-        }
-        Rectangle {
-            color: "white"
-            border.color: "gray"
-            height: parent.height
-            width: whiteWidth
+            y: 0
+            x: whiteKey.x - width/2
+            z: 1
         }
     }
 }

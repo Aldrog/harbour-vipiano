@@ -27,44 +27,59 @@ Page {
 
     allowedOrientations: Orientation.All
 
-    Column {
-        anchors.fill: parent
+    ComboBox {
+        id: selector
 
-        PageHeader {
-            id: header
-            title: qsTr("Welcome to ViPiano (Virtual Piano)")
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
         }
 
-        ComboBox {
-            label: qsTr("Program")
-            value: synthesizer.currentProgram.name
+        label: qsTr("Program")
+        value: synthesizer.currentProgram.name
 
-            menu: ContextMenu {
-                Repeater {
-                    model: synthesizer.availablePrograms
+        menu: ContextMenu {
+            Repeater {
+                model: synthesizer.availablePrograms
 
-                    MenuItem {
-                        text: modelData.name
-                        onClicked: synthesizer.currentProgram = modelData
-                    }
+                MenuItem {
+                    text: modelData.name
+                    onClicked: synthesizer.currentProgram = modelData
                 }
             }
         }
+    }
 
-        Grid {
-            id: keyboard
+    Grid {
+        id: keyboard
 
-            width: parent.width
-            leftPadding: Theme.horizontalPageMargin
-            rightPadding: Theme.horizontalPageMargin
-            spacing: Theme.paddingSmall
+        anchors {
+            left: parent.left
+            right: parent.right
+            leftMargin: Theme.horizontalPageMargin
+            rightMargin: Theme.horizontalPageMargin
+            bottom: parent.bottom
+            bottomMargin: Theme.paddingLarge
+            top: selector.bottom
+        }
+        spacing: Theme.paddingSmall
 
-            columns: ~~((parent.width - leftPadding - rightPadding + spacing) / (500 + spacing))
+        columns: isPortrait ? 1 : 2
 
-            Repeater {
-                model: 10
-                Octave {
-                    number: index
+        Repeater {
+            model: 6
+            Octave {
+                number: index + 2
+                width: {
+                    if (isPortrait)
+                        return page.width - 2*Theme.horizontalPageMargin
+                    else
+                        return page.width / 2 - Theme.horizontalPageMargin - keyboard.spacing / 2
+                }
+                height: {
+                    var rows = isPortrait ? 6 : 3
+                    return (keyboard.height - (rows-1)*keyboard.spacing) / rows
                 }
             }
         }

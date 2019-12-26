@@ -11,10 +11,6 @@
 <context>
     <name>FirstPage</name>
     <message>
-        <source>Welcome to ViPiano (Virtual Piano)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Program</source>
         <translation type="unfinished"></translation>
     </message>
