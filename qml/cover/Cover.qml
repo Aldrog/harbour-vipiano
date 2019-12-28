@@ -17,27 +17,36 @@
  * along with ViPiano.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 CoverBackground {
-    Label {
-        id: label
-        anchors.centerIn: parent
-        text: qsTr("My Cover")
+    Image {
+        id: clef
+
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+            top: keyboard.bottom
+        }
+
+        source: "../images/clef_" + (Theme.colorScheme == Theme.LightOnDark ? "w" : "b") + ".svg"
+        fillMode: Image.PreserveAspectFit
     }
 
-    CoverActionList {
-        id: coverAction
+    Image {
+        id: keyboard
 
-        CoverAction {
-            iconSource: "image://theme/icon-cover-next"
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
         }
+        height: width/3
 
-        CoverAction {
-            iconSource: "image://theme/icon-cover-pause"
-        }
+        source: "../images/keyboard.svg"
+        fillMode: Image.PreserveAspectFit
     }
 }
 
