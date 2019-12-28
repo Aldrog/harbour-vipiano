@@ -19,9 +19,9 @@ SOURCES += \
     src/harbour-vipiano.cpp
 
 OTHER_FILES += \
-    qml/cover/CoverPage.qml \
-    qml/pages/FirstPage.qml \
     qml/harbour-vipiano.qml \
+    qml/cover/Cover.qml \
+    qml/pages/PianoPage.qml \
     qml/pages/Octave.qml \
     translations/*.ts
 
