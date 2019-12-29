@@ -1,0 +1,6 @@
+# QtCreator
+CMakeLists.txt.user
+
+# Build directories
+RPMS/
+rpmbuilddir/

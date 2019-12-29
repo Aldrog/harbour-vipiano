@@ -11,16 +11,12 @@ Name:       harbour-vipiano
 %define __requires_exclude ^libfluidsynth|libsndfile.*$
 # << macros
 
-%{!?qtc_qmake:%define qtc_qmake %qmake}
-%{!?qtc_qmake5:%define qtc_qmake5 %qmake5}
-%{!?qtc_make:%define qtc_make make}
-%{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    A piano synthesizer
 Version:    0.1
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+ and LGPLv2+ and MIT
-URL:        http://example.org/
+URL:        https://github.com/Aldrog/harbour-vipiano
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-vipiano.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
@@ -49,47 +45,22 @@ Short description of my Sailfish OS Application
 
 %build
 # >> build pre
-mkdir -p fluidsynth
-cd fluidsynth
-cmake ../../%{name}/fluidsynth \
--DCMAKE_INSTALL_PREFIX:PATH=%{_datadir}/%{name} \
--DCMAKE_BUILD_TYPE:STRING=Release \
--Denable-readline:BOOL=OFF \
--Denable-dbus:BOOL=OFF \
--DBUILD_TOOL:BOOL=OFF \
--DBUILD_TESTS:BOOL=OFF \
--DBUILD_DOCS:BOOL=OFF
+mkdir -p rpmbuilddir
+cd rpmbuilddir &&  cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr ..
 cd ..
-mkdir -p $PWD/tempdest
-DESTDIR=$PWD/tempdest /usr/bin/make -C fluidsynth install
+make -C rpmbuilddir %{?_smp_mflags}
 # << build pre
 
-%qtc_qmake5 
 
-%qtc_make %{?_smp_mflags}
 
 # >> build post
 # << build post
-
 %install
 rm -rf %{buildroot}
 # >> install pre
-cd fluidsynth
-cmake ../../%{name}/fluidsynth \
--DCMAKE_INSTALL_PREFIX:PATH=%{_datadir}/%{name} \
--DCMAKE_BUILD_TYPE:STRING=Release \
--Denable-readline:BOOL=OFF \
--Denable-dbus:BOOL=OFF \
--DBUILD_TOOL:BOOL=OFF \
--DBUILD_TESTS:BOOL=OFF \
--DBUILD_DOCS:BOOL=OFF \
--DINSTALL_DEVEL:BOOL=OFF
-cd ..
-DESTDIR=%{buildroot} /usr/bin/make -C fluidsynth install
-mkdir -p %{buildroot}%{_datadir}/%{name}/soundfonts/
-install -m 644 -p ../%{name}/soundfonts/FluidR3Mono_GM.sf3 %{buildroot}%{_datadir}/%{name}/soundfonts/
+DESTDIR=%{buildroot} make -C rpmbuilddir install
+mkdir -p %{_bindir}
 # << install pre
-%qmake5_install
 
 # >> install post
 # << install post
