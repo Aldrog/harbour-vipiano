@@ -12,7 +12,7 @@ Name:       harbour-vipiano
 # << macros
 
 Summary:    A piano synthesizer
-Version:    0.1
+Version:    1.0
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3+ and LGPLv2+ and MIT
@@ -55,6 +55,7 @@ make -C rpmbuilddir %{?_smp_mflags}
 
 # >> build post
 # << build post
+
 %install
 rm -rf %{buildroot}
 # >> install pre
