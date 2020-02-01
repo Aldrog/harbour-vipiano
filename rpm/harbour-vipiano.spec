@@ -12,8 +12,8 @@ Name:       harbour-vipiano
 # << macros
 
 Summary:    A piano synthesizer
-Version:    1.0
-Release:    1
+Version:    1.0.1
+Release:    2
 Group:      Qt/Qt
 License:    GPLv3+ and LGPLv2+ and MIT
 URL:        https://github.com/Aldrog/harbour-vipiano
