@@ -25,8 +25,8 @@ Item {
 
     property int number: 0
     readonly property int whiteWidth: width / 7
-    property int blackWidth: 70
-    property int blackHeight: 170
+    property int blackWidth: whiteWidth / 2
+    property int blackHeight: height * 2/3
 
     function keyNumFromPoint(point) {
         for (var i = 0; i < blackKeys.count; i++) {
@@ -112,8 +112,6 @@ Item {
             property int keyNum: [1, 3, 6, 8, 10][index]
 
             color: "black"
-            border.color: "gray"
-            border.width: 3
             height: blackHeight
             width: blackWidth
             y: 0
