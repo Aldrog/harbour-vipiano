@@ -38,6 +38,8 @@ ExternalProject_Add(fluid
 add_executable(harbour-vipiano 
     src/synthesizer.h 
     src/synthesizer.cpp
+    src/synthsettings.h 
+    src/synthsettings.cpp
     src/harbour-vipiano.cpp
 )
 add_dependencies(harbour-vipiano fluid)

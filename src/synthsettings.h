@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017, 2020 Andrew Penkrat
+ * Copyright © 2020 Andrew Penkrat
  *
  * This file is part of ViPiano.
  *
@@ -17,21 +17,24 @@
  * along with ViPiano.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <sailfishapp.h>
-#include <QtQuick>
-#include "synthesizer.h"
+#ifndef SYNTHSETTINGS_H
+#define SYNTHSETTINGS_H
 
+#include <QSettings>
 
-int main(int argc, char *argv[])
+class SynthSettings : QSettings
 {
-    QGuiApplication *app(SailfishApp::application(argc, argv));
-    QCoreApplication::setOrganizationName("harbour-vipiano");
-    QCoreApplication::setApplicationName("harbour-vipiano");
-    QQuickView *view(SailfishApp::createView());
-    qmlRegisterType<SynthPreset>();
-    Synthesizer *synth = new Synthesizer();
-    view->rootContext()->setContextProperty("synthesizer", synth);
-    view->setSource(SailfishApp::pathTo("qml/harbour-vipiano.qml"));
-    view->show();
-    return app->exec();
-}
+public:
+    using QSettings::QSettings;
+
+    double gain() const;
+    void setGain(double gain);
+    bool dynamicLoading() const;
+    void setDynamicLoading(bool dynamicLoading);
+
+private:
+    static const QString gainKey;
+    static const QString dynamicLoadingKey;
+};
+
+#endif // SYNTHSETTINGS_H

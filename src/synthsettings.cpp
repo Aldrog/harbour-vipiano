@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017, 2020 Andrew Penkrat
+ * Copyright © 2020 Andrew Penkrat
  *
  * This file is part of ViPiano.
  *
@@ -17,21 +17,24 @@
  * along with ViPiano.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <sailfishapp.h>
-#include <QtQuick>
-#include "synthesizer.h"
+#include "synthsettings.h"
 
-
-int main(int argc, char *argv[])
-{
-    QGuiApplication *app(SailfishApp::application(argc, argv));
-    QCoreApplication::setOrganizationName("harbour-vipiano");
-    QCoreApplication::setApplicationName("harbour-vipiano");
-    QQuickView *view(SailfishApp::createView());
-    qmlRegisterType<SynthPreset>();
-    Synthesizer *synth = new Synthesizer();
-    view->rootContext()->setContextProperty("synthesizer", synth);
-    view->setSource(SailfishApp::pathTo("qml/harbour-vipiano.qml"));
-    view->show();
-    return app->exec();
+double SynthSettings::gain() const {
+    return value(gainKey, 0.5).toDouble();
 }
+
+void SynthSettings::setGain(double gain) {
+    return setValue(gainKey, gain);
+}
+
+bool SynthSettings::dynamicLoading() const {
+    return value(dynamicLoadingKey, true).toBool();
+}
+
+void SynthSettings::setDynamicLoading(bool dynamicLoading) {
+    return setValue(dynamicLoadingKey, dynamicLoading);
+}
+
+const QString SynthSettings::gainKey = QStringLiteral("Synth/Gain");
+const QString SynthSettings::dynamicLoadingKey = QStringLiteral("Synth/DynamicLoading");
+

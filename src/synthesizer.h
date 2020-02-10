@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Andrew Penkrat
+ * Copyright © 2017, 2020 Andrew Penkrat
  *
  * This file is part of ViPiano.
  *
@@ -19,6 +19,8 @@
 
 #ifndef SYNTHESIZER_H
 #define SYNTHESIZER_H
+
+#include "synthsettings.h"
 
 #include <QObject>
 #include <QQmlListProperty>
@@ -73,14 +75,16 @@ private slots:
     static void onAudioAcquired(audioresource_t *audio_resource, bool acquired, void *user_data);
 
 private:
-    fluid_settings_t *m_settings;
+    SynthSettings *m_settings;
+
+    fluid_settings_t *m_synthsettings;
     fluid_audio_driver_t *m_adriver;
     fluid_synth_t *m_synth;
 
     QList<SynthPreset *> m_presets;
     SynthPreset *m_currentPreset;
 
-    audioresource_t *resource;
+    audioresource_t *m_resource_handle;
 };
 
 #endif // SYNTHESIZER_H

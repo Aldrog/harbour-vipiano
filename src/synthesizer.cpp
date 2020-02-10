@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Andrew Penkrat
+ * Copyright © 2017, 2020 Andrew Penkrat
  *
  * This file is part of ViPiano.
  *
@@ -21,10 +21,11 @@
 #include <QDebug>
 #include <sailfishapp.h>
 
-Synthesizer::Synthesizer(QObject *parent) : QObject(parent)
+Synthesizer::Synthesizer(QObject *parent)
+    : QObject(parent), m_settings(new SynthSettings(this))
 {
-    m_settings = new_fluid_settings();
-    m_synth = new_fluid_synth(m_settings);
+    m_synthsettings = new_fluid_settings();
+    m_synth = new_fluid_synth(m_synthsettings);
     int sfontId = fluid_synth_sfload(m_synth, SailfishApp::pathTo("soundfonts/FluidR3Mono_GM.sf3").path().toStdString().c_str(), true);
     if(sfontId == FLUID_FAILED)
         qDebug() << "Failed font loading";
@@ -42,23 +43,28 @@ Synthesizer::Synthesizer(QObject *parent) : QObject(parent)
 
         setCurrentProgram(m_presets[0]);
 
-        fluid_settings_setstr(m_settings, "audio.driver", "pulseaudio");
-        fluid_settings_setstr(m_settings, "audio.pulseaudio.media-role", "x-maemo");
-        m_adriver = new_fluid_audio_driver(m_settings, m_synth);
+        fluid_settings_setstr(m_synthsettings, "audio.driver", "pulseaudio");
+        fluid_settings_setstr(m_synthsettings, "audio.pulseaudio.media-role", "x-maemo");
+        fluid_settings_setnum(m_synthsettings, "synth.gain", m_settings->gain());
+        fluid_settings_setint(m_synthsettings, "synth.dynamic-sample-loading",
+                              m_settings->dynamicLoading());
+        fluid_settings_setnum(m_synthsettings, "synth.sample-rate", 48000);
+        m_adriver = new_fluid_audio_driver(m_synthsettings, m_synth);
 
         void *user_data = nullptr;
-        resource = audioresource_init(AUDIO_RESOURCE_MEDIA, Synthesizer::onAudioAcquired, user_data);
-        audioresource_acquire(resource);
+        m_resource_handle = audioresource_init(AUDIO_RESOURCE_MEDIA,
+                                               Synthesizer::onAudioAcquired, user_data);
+        audioresource_acquire(m_resource_handle);
     }
 }
 
 Synthesizer::~Synthesizer()
 {
-    audioresource_release(resource);
-    audioresource_free(resource);
+    audioresource_release(m_resource_handle);
+    audioresource_free(m_resource_handle);
 
     delete_fluid_synth(m_synth);
-    delete_fluid_settings(m_settings);
+    delete_fluid_settings(m_synthsettings);
 }
 
 QQmlListProperty<SynthPreset> Synthesizer::availablePrograms()
