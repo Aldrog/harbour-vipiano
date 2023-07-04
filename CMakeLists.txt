@@ -42,6 +42,7 @@ add_executable(harbour-vipiano
     src/synthsettings.cpp
     src/harbour-vipiano.cpp
 )
+
 add_dependencies(harbour-vipiano fluid)
 target_include_directories(harbour-vipiano PRIVATE
     $<BUILD_INTERFACE:
@@ -49,12 +50,15 @@ target_include_directories(harbour-vipiano PRIVATE
     ${AUDIORESOURCE_INCLUDE_DIRS}
     ${DEPS_DIR}/include
 >)
+
+target_link_directories(harbour-vipiano PUBLIC "${DEPS_DIR}/lib64")
+
 target_link_libraries(harbour-vipiano
     Qt5::Quick
     ${SAILFISH_LDFLAGS}
     ${AUDIORESOURCE_LDFLAGS}
     # FluidSynth with dependencies
-    ${DEPS_DIR}/lib/libfluidsynth.a
+    libfluidsynth.a
     ${GLIB_LDFLAGS}
     ${PULSE_LDFLAGS}
     ${LIBSNDFILE_LDFLAGS}
